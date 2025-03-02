@@ -1,6 +1,7 @@
 # Air Quality Comparison Tool
 
 A web application to compare air quality measurements between two countries based on OpenAQ data.
+
 Data source: https://public.opendatasoft.com/explore/dataset/openaq/export/?flg=en-us&disjunctive.measurements_parameter&disjunctive.location&disjunctive.city
 
 ## Features
