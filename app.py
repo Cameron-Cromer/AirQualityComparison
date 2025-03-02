@@ -5,27 +5,37 @@ import plotly
 import plotly.express as px
 import os
 
-# Initialize the Flask application
+# Initialize Flask application
 app = Flask(__name__)
 
 # Load data with robust error handling
 def load_data():
     try:
-        # More robust CSV parsing with error handling
-        df = pd.read_csv('openaq.csv', 
-                         on_bad_lines='skip',
-                         quotechar='"',
-                         escapechar='\\',
-                         low_memory=False)
+        # Get path from environment variable, or use default
+        csv_path = os.environ.get('CSV_PATH', 'openaq.csv')
+        
+        print(f"Looking for CSV at: {csv_path}")
+        
+        # Check if file exists
+        if not os.path.exists(csv_path):
+            print(f"CSV file not found at {csv_path}")
+            return pd.DataFrame(columns=['Country Label', 'Pollutant', 'Value', 'Unit'])
+            
+        df = pd.read_csv(csv_path, on_bad_lines='skip')
+        
+        # Print data summary to help debug
+        print(f"CSV loaded successfully. Shape: {df.shape}")
+        print(f"Columns: {df.columns.tolist()}")
         
         # Filter out negative values
-        df = df[df['Value'] >= 0]
-        
-        print(f"Successfully loaded data with {len(df)} rows")
+        if 'Value' in df.columns:
+            df = df[df['Value'] >= 0]
+        else:
+            print(f"Column 'Value' not found in CSV. Available columns: {df.columns.tolist()}")
+            
         return df
     except Exception as e:
         print(f"Error loading data: {e}")
-        # Return empty DataFrame with expected columns as fallback
         return pd.DataFrame(columns=['Country Label', 'Pollutant', 'Value', 'Unit'])
 
 # Get list of unique countries
