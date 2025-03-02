@@ -1,0 +1,67 @@
+# Air Quality Comparison Tool
+
+A simple web application to compare air quality measurements between two countries based on OpenAQ data.
+
+## Features
+
+- Visualize and compare air pollutant levels between two countries
+- Select from various pollutant types (NO2, PM2.5, O3, etc.)
+- Interactive bar charts showing average pollutant levels
+
+## Project Structure
+
+```
+air-quality-comparison/
+│
+├── app.py                 # Flask application
+├── openaq.csv             # Data file
+├── requirements.txt       # Dependencies
+├── static/
+│   └── styles.css         # CSS styling
+└── templates/
+    └── index.html         # HTML template
+```
+
+## Setup Instructions
+
+1. **Install Dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Place Your Data File**
+
+   Place your `openaq.csv` file in the project root directory.
+
+3. **Run the Application**
+
+   ```bash
+   python app.py
+   ```
+
+4. **Access the Application**
+
+   Open your browser and navigate to:
+   ```
+   http://127.0.0.1:5000/
+   ```
+
+## How to Use
+
+1. At the top of the page, select the pollutant you want to compare (NO2, PM2.5, O3, etc.)
+2. On the left panel, select the first country from the dropdown menu
+3. On the right panel, select the second country from the dropdown menu
+4. The charts will automatically update to show the average pollutant levels for each country
+
+## Technologies Used
+
+- Backend: Flask, Pandas
+- Frontend: HTML, CSS, Plotly.js
+- Data Visualization: Plotly
+
+## Notes
+
+- The application calculates average pollutant values for each country based on all available measurements
+- The number of measurements used for the calculation is displayed in the chart title
+- If no data is available for a specific country/pollutant combination, the chart will display "No data"
