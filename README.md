@@ -1,6 +1,7 @@
 # Air Quality Comparison Tool
 
-A simple web application to compare air quality measurements between two countries based on OpenAQ data.
+A web application to compare air quality measurements between two countries based on OpenAQ data.
+Data source: https://public.opendatasoft.com/explore/dataset/openaq/export/?flg=en-us&disjunctive.measurements_parameter&disjunctive.location&disjunctive.city
 
 ## Features
 
@@ -13,39 +14,14 @@ A simple web application to compare air quality measurements between two countri
 ```
 air-quality-comparison/
 │
-├── app.py                 # Flask application
-├── openaq.csv             # Data file
-├── requirements.txt       # Dependencies
+├── app.py               
+├── openaq.csv         
+├── requirements.txt     
 ├── static/
-│   └── styles.css         # CSS styling
+│   └── styles.css      
 └── templates/
-    └── index.html         # HTML template
+    └── index.html        
 ```
-
-## Setup Instructions
-
-1. **Install Dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Place Your Data File**
-
-   Place your `openaq.csv` file in the project root directory.
-
-3. **Run the Application**
-
-   ```bash
-   python app.py
-   ```
-
-4. **Access the Application**
-
-   Open your browser and navigate to:
-   ```
-   http://127.0.0.1:5000/
-   ```
 
 ## How to Use
 
