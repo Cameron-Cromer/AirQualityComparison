@@ -7,11 +7,17 @@ import plotly.express as px
 app = Flask(__name__)
 
 # Load data once at startup
-def load_data():
-    df = pd.read_csv('openaq.csv')
-    # Filter out negative values which might be error codes
-    df = df[df['Value'] >= 0]
-    return df
+@app.route('/')
+def index():
+    try:
+        df = load_data()
+        countries = get_countries(df)
+        pollutants = get_pollutants(df)
+        # ... rest of your code ...
+        return render_template('index.html', ...)
+    except Exception as e:
+        error_message = f"Unable to load data: {str(e)}"
+        return render_template('error.html', error=error_message)
 
 # Get list of unique countries
 def get_countries(df):
