@@ -12,17 +12,13 @@ def load_data():
     Load the CSV data, handling semicolon separators.
     """
     try:
-        # Try to load the CSV file with semicolon separator
         print("Looking for CSV at: openaq.csv")
         if os.path.exists('openaq.csv'):
-            # Try reading with semicolon separator
             df = pd.read_csv('openaq.csv', sep=';', on_bad_lines='skip')
             
-            # Check if we got multiple columns (success with semicolon separator)
             if len(df.columns) > 1:
                 print(f"CSV loaded successfully with semicolon separator. Shape: {df.shape}")
             else:
-                # If we got only one column, try other common separators
                 for separator in [',', '\t', '|']:
                     try:
                         df = pd.read_csv('openaq.csv', sep=separator, on_bad_lines='skip')
@@ -32,25 +28,21 @@ def load_data():
                     except:
                         continue
                 
-                # If still only one column, the format might be more complex
                 if len(df.columns) == 1:
                     print("Could not automatically detect separator. Creating demo data.")
                     return create_demo_data()
             
             print(f"Columns: {df.columns.tolist()}")
             
-            # Filter out negative values
             if 'Value' in df.columns:
                 df = df[df['Value'] >= 0]
             else:
                 print(f"Column 'Value' not found in CSV. Available columns: {df.columns.tolist()}")
                 return create_demo_data()
                 
-            # Check for Country Label and Pollutant columns
             if 'Country Label' not in df.columns or 'Pollutant' not in df.columns:
                 print("Missing required columns. Creating demo data.")
                 return create_demo_data()
-                
             return df
         else:
             print("CSV file not found. Creating demo data.")
@@ -74,7 +66,6 @@ def create_demo_data():
     }
     return pd.DataFrame(data)
 
-# Get list of unique countries
 def get_countries(df):
     try:
         return sorted(df['Country Label'].dropna().unique().tolist())
@@ -82,7 +73,6 @@ def get_countries(df):
         print(f"Error getting countries: {e}")
         return ["United States", "China", "India"]
 
-# Get list of unique pollutants
 def get_pollutants(df):
     try:
         return sorted(df['Pollutant'].dropna().unique().tolist())
@@ -90,7 +80,6 @@ def get_pollutants(df):
         print(f"Error getting pollutants: {e}")
         return ["NO2", "PM2.5", "O3"]
 
-# Calculate average pollutant value for a country
 def get_country_pollutant_avg(df, country, pollutant):
     try:
         filtered_df = df[(df['Country Label'] == country) & (df['Pollutant'] == pollutant)]
@@ -106,11 +95,9 @@ def get_country_pollutant_avg(df, country, pollutant):
         print(f"Error calculating average for {country}/{pollutant}: {e}")
         return 0, 0, "Error"
 
-# Create bar chart
 def create_bar_chart(value, country, pollutant, unit, count):
     try:
         if value == 0 and count == 0:
-            # Create empty figure with message when no data
             fig = px.bar(x=["No data"], y=[0])
             fig.update_layout(
                 title=f"No data for {pollutant} in {country}",
@@ -127,7 +114,6 @@ def create_bar_chart(value, country, pollutant, unit, count):
                 yaxis_title=f"{pollutant} ({unit})",
             )
         
-        # Convert to JSON for embedding in HTML
         graph_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         return graph_json
     except Exception as e:
@@ -136,7 +122,6 @@ def create_bar_chart(value, country, pollutant, unit, count):
         fig.update_layout(title=f"Error creating chart")
         return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-# Main route
 @app.route('/')
 def index():
     try:
@@ -144,16 +129,13 @@ def index():
         countries = get_countries(df)
         pollutants = get_pollutants(df)
         
-        # Default selections
         default_country1 = countries[0] if countries else "No data"
         default_country2 = countries[1] if len(countries) > 1 else countries[0] if countries else "No data"
         default_pollutant = pollutants[0] if pollutants else "NO2"
         
-        # Get data for default selections
         value1, count1, unit1 = get_country_pollutant_avg(df, default_country1, default_pollutant)
         value2, count2, unit2 = get_country_pollutant_avg(df, default_country2, default_pollutant)
         
-        # Create default charts
         graph1_json = create_bar_chart(value1, default_country1, default_pollutant, unit1, count1)
         graph2_json = create_bar_chart(value2, default_country2, default_pollutant, unit2, count2)
         
@@ -170,7 +152,6 @@ def index():
         print(error_message)
         return render_template('error.html', error=error_message)
 
-# Chart update route
 @app.route('/update_chart/<country>/<pollutant>/<position>')
 def update_chart(country, pollutant, position):
     try:
@@ -181,16 +162,15 @@ def update_chart(country, pollutant, position):
     except Exception as e:
         return jsonify({"error": str(e)})
 
-# Simple error handler for 404 errors
+#Error handler for 404
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error.html', error="Page not found"), 404
 
-# Simple error handler for 500 errors
+#Error handler for 500
 @app.errorhandler(500)
 def server_error(e):
     return render_template('error.html', error="Server error"), 500
 
 if __name__ == '__main__':
-    # Use debug mode when running locally
     app.run(debug=True)
