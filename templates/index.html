@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Air Quality Comparison</title>
-    <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -27,7 +25,7 @@
         <div class="comparison-container">
             <div class="country-panel">
                 <div class="country-selector">
-                    <label for="country-select-1">Country 1:</label>
+                    <label for="country-select-1">Country A:</label>
                     <select id="country-select-1">
                         {% for country in countries %}
                         <option value="{{ country }}" {% if country == default_country1 %}selected{% endif %}>{{ country }}</option>
@@ -39,7 +37,7 @@
 
             <div class="country-panel">
                 <div class="country-selector">
-                    <label for="country-select-2">Country 2:</label>
+                    <label for="country-select-2">Country :</label>
                     <select id="country-select-2">
                         {% for country in countries %}
                         <option value="{{ country }}" {% if country == default_country2 %}selected{% endif %}>{{ country }}</option>
@@ -56,14 +54,12 @@
     </div>
 
     <script>
-        // Initial chart rendering
         var graph1 = {{ graph1_json | safe }};
         var graph2 = {{ graph2_json | safe }};
         
         Plotly.newPlot('chart1', graph1.data, graph1.layout);
         Plotly.newPlot('chart2', graph2.data, graph2.layout);
 
-        // Update functions
         async function updateChart(country, pollutant, position) {
             const response = await fetch(`/update_chart/${country}/${pollutant}/${position}`);
             const data = await response.json();
@@ -76,7 +72,6 @@
             }
         }
 
-        // Event listeners
         document.getElementById('pollutant-select').addEventListener('change', function() {
             const pollutant = this.value;
             const country1 = document.getElementById('country-select-1').value;
